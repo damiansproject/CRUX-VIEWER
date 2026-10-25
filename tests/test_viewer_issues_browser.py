@@ -2,6 +2,7 @@
 import io
 import json
 import os
+from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
@@ -296,6 +297,84 @@ def test_overlapping_quotes_paint_on_a_web_source(tmp_path, monkeypatch):
             server.server_close()
 
 
+def _claim(claim_id, paper_id, text):
+    return json.dumps({'id': claim_id, 'paper_id': paper_id, 'kind': 'finding', 'statement': text,
+                       'quotes': [{'text': text, 'locator': {'paper': paper_id, 'page': 1}}]}) + '\n'
+
+
+@contextmanager
+def _no_pdf_workspace(tmp_path, monkeypatch, quote='X is Y on the page'):
+    """The workspace open on a web source with no PDF on disk; yields the page and the run folder."""
+    assets = os.environ.get('CRUX_BROWSER_ASSETS')
+    if not assets:
+        pytest.skip('Set CRUX_BROWSER_ASSETS to the pinned PDF.js and markdown-it scripts')
+    import serve_literature
+    from playwright.sync_api import sync_playwright
+    from test_literature_catalog import _write_run
+    run = _write_run(tmp_path, web=True)
+    (run / 'cleaned_jsons' / 'p_one.json').write_text(json.dumps({'pages': [{'page': 1, 'text': quote}]}))
+    (run / 'claims.jsonl').write_text(_claim('clm_p_one_0001', 'p_one', quote))
+    monkeypatch.setattr(serve_literature, '_fetch_live', lambda url: (_ for _ in ()).throw(serve_literature.urllib.error.URLError('offline')))
+    server, port = _server(run)
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={'width': 1280, 'height': 720})
+        def route(request):
+            path = Path(assets) / request.request.url.rsplit('/', 1)[-1]
+            request.fulfill(path=str(path), content_type='application/javascript') if path.is_file() else request.abort()
+        page.route('https://**/*', route)
+        try:
+            page.goto(f'http://127.0.0.1:{port}/view/p_one')
+            page.frame_locator('#reader-left').locator('#status', has_text='example.org').wait_for(timeout=10000)
+            yield page, run
+        finally:
+            browser.close()
+            server.shutdown()
+            server.server_close()
+
+
+def _cite(page, source, top=40):
+    page.evaluate(f'window.cruxWorkspace.citation({READER_WIN}, {json.dumps(source)}, {{left: 40, top: {top}, bottom: {top + 20}}}, false)')
+    return page.locator('#source-preview')
+
+
+def test_a_claim_on_a_source_without_a_pdf_previews_its_stored_quote(tmp_path, monkeypatch):
+    with _no_pdf_workspace(tmp_path, monkeypatch) as (page, run):
+        card = _cite(page, {'claim_id': 'clm_p_one_0001'})
+        card.locator('blockquote', has_text='X is Y on the page').wait_for(timeout=10000)
+        assert 'Source unavailable' not in card.inner_text()
+
+
+def test_a_long_stored_quote_keeps_the_open_button_on_screen(tmp_path, monkeypatch):
+    with _no_pdf_workspace(tmp_path, monkeypatch, quote=' '.join(['X is Y on the page'] * 40)) as (page, run):
+        card = _cite(page, {'claim_id': 'clm_p_one_0001'}, top=480)
+        card.locator('blockquote', has_text='X is Y on the page').wait_for(timeout=10000)
+        box = card.locator('.source-open').bounding_box()
+        assert box['y'] + box['height'] <= 720
+
+
+def test_a_related_citation_never_shows_the_citing_sentence_as_the_sources_quote(tmp_path, monkeypatch):
+    with _no_pdf_workspace(tmp_path, monkeypatch) as (page, run):
+        card = _cite(page, {'paper_id': 'p_one', 'text': 'A sentence the source never says', 'related': True})
+        page.wait_for_function('(() => { const c = document.querySelector("#source-preview");'
+                               ' return c.querySelector("blockquote").textContent ||'
+                               ' /^(?!Finding)./.test(c.querySelector(".source-status").textContent); })()')
+        assert 'A sentence the source never says' not in card.locator('blockquote').inner_text()
+
+
+def test_a_source_added_after_the_workspace_opened_previews_its_stored_quote(tmp_path, monkeypatch):
+    with _no_pdf_workspace(tmp_path, monkeypatch) as (page, run):
+        index = run / 'cleaned_jsons' / 'index.json'
+        papers = json.loads(index.read_text())['papers']
+        late = run / 'cleaned_jsons' / 'p_late.json'
+        late.write_text(json.dumps({'pages': [{'page': 1, 'text': 'Late finding here'}]}))
+        index.write_text(json.dumps({'papers': papers + [{**papers[0], 'paper_id': 'p_late', 'text_path': str(late)}]}))
+        with (run / 'claims.jsonl').open('a') as claims:
+            claims.write(_claim('clm_p_late_0001', 'p_late', 'Late finding here'))
+        card = _cite(page, {'claim_id': 'clm_p_late_0001'})
+        card.locator('blockquote', has_text='Late finding here').wait_for(timeout=10000)
+
+
 @pytest.mark.parametrize('reader', [60], indirect=True)
 def test_a_long_pdf_draws_only_the_pages_near_the_view(reader):
     page, frame, run, errors = reader
@@ -349,4 +428,33 @@ def test_page_box_shows_and_accepts_the_books_own_page_numbers(reader):
     page.wait_for_function(f'{READER_WIN}.cruxReader.page === 12')
     assert frame.locator('#pdf-page').input_value() == '10'
     assert frame.locator('#pdf-page-count').inner_text() == '(12 of 60)'
+    assert not errors
+
+
+def test_scrolling_the_paper_hides_the_source_preview(reader):
+    page, frame, run, errors = reader
+    source = json.dumps({'paper_id': 'contrast', 'text': 'Readable evidence'})
+    page.evaluate(f'window.cruxWorkspace.citation({READER_WIN}, {source}, {{left: 40, top: 40, bottom: 60}}, false)')
+    card = page.locator('#source-preview')
+    card.wait_for(state='visible')
+    page.wait_for_timeout(500)
+    assert card.is_visible(), 'the card stays while the paper holds still'
+    frame.locator('#doc-well').evaluate('el => { el.scrollTop += 200; }')
+    card.wait_for(state='hidden', timeout=3000)
+    assert not errors
+
+
+@pytest.mark.parametrize('reader', [6], indirect=True)
+def test_scrolling_the_other_reader_leaves_the_source_preview_open(reader):
+    page, frame, run, errors = reader
+    page.locator('#split-right').click()
+    right = page.frame_locator('#reader-right')
+    right.locator('.textLayer span').first.wait_for()
+    source = json.dumps({'paper_id': 'contrast', 'text': 'Readable evidence'})
+    page.evaluate(f'window.cruxWorkspace.citation({READER_WIN}, {source}, {{left: 40, top: 40, bottom: 60}}, false)')
+    card = page.locator('#source-preview')
+    card.wait_for(state='visible')
+    assert right.locator('#doc-well').evaluate('el => { el.scrollTop += 200; return el.scrollTop; }') > 0
+    page.wait_for_timeout(500)
+    assert card.is_visible(), 'the card belongs to the left reader'
     assert not errors

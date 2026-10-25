@@ -215,7 +215,7 @@ document.addEventListener("pointerdown", () => { onCiteLeave(); host.hidePreview
 document.addEventListener("keydown", (event) => { if (event.key === "Escape") { onCiteLeave(); host.hidePreview(); } }, true);
 well.addEventListener("pointermove", onCiteMove);
 well.addEventListener("pointerleave", onCiteLeave);
-well.addEventListener("scroll", onCiteLeave, { passive: true });
+well.addEventListener("scroll", () => { onCiteLeave(); host.readerScrolled(window); }, { passive: true });
 well.addEventListener("click", (event) => {
   if (markUi.tool !== "select" || event.target.closest(".pdf-link, .user-mark, .mark-handle") || !window.getSelection()?.isCollapsed) return;
   citationAtPoint(event)?.hit.link?.click();

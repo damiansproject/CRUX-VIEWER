@@ -12,6 +12,7 @@ let active = "left";
 let tool = "select";
 let ink = "yellow";
 let previewGeneration = 0;
+let previewFrom = null; // the reader window whose cite the open card points at
 let catalog = [];
 let railWidth = 300;
 const panes = bindRailPanes({ paperId: "", chatId: "_workspace", claimCount: 0,
@@ -291,8 +292,15 @@ async function resolveSource(source) {
   return { paper_id: claim.paper_id, page: quote?.page || quote?.locator?.page, text: quote?.text, claim_id: claim.claim_id || claim.id };
 }
 
-async function showCitation(raw, anchor, open = false) {
+/** A paper's catalog row, refetching the catalog once when the paper was added after it loaded. */
+async function paperRow(id) {
+  if (!catalog.some((row) => row.paper_id === id)) catalog = (await fetch("/api/catalog").then((response) => response.json())).papers;
+  return catalog.find((row) => row.paper_id === id);
+}
+
+async function showCitation(raw, anchor, open = false, from = null) {
   const generation = ++previewGeneration;
+  previewFrom = from;
   const card = $("source-preview");
   card.innerHTML = `<div class="source-body">
     <div class="source-head"><span class="source-location"></span>
@@ -342,7 +350,7 @@ async function showCitation(raw, anchor, open = false) {
           raw.onRetrieved?.(row);
           renderLibrary();
           // A completed retrieval may update the library, never reopen a dismissed or replaced card.
-          if (generation === previewGeneration) showCitation({ paper_id: row.paper_id, text: raw.text, related: true }, rect);
+          if (generation === previewGeneration) showCitation({ paper_id: row.paper_id, text: raw.text, related: true }, rect, false, from);
         } catch (error) {
           if (generation !== previewGeneration) return;
           note.textContent = error.message;
@@ -386,7 +394,7 @@ async function showCitation(raw, anchor, open = false) {
         next.innerHTML = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${step < 0 ? "m10 4-4 4 4 4" : "m6 4 4 4-4 4"}"/></svg>`;
         next.onclick = () => {
           const row = source.candidates[(index + step + source.candidates.length) % source.candidates.length];
-          showCitation({ ...source, paper_id: row.paper_id }, rect);
+          showCitation({ ...source, paper_id: row.paper_id }, rect, false, from);
         };
         nav.append(next);
       }
@@ -394,6 +402,13 @@ async function showCitation(raw, anchor, open = false) {
     }
     placePreview(card, rect);
     if (!source.text) { note.textContent = "Open this document to read it."; return; }
+    // A claim on a source with no PDF to crop (a web page or an abstract): show its banked quote.
+    if (source.claim_id && (await paperRow(source.paper_id))?.pdf_ok === false) {
+      if (generation !== previewGeneration) return;
+      quote.textContent = source.text;
+      placePreview(card, rect);
+      return;
+    }
     note.textContent = "Finding passage in the cited paper…";
     const existing = readers().find(({ api }) => api.paper.paper_id === source.paper_id);
     const preview = await sourcePreview(source, existing?.api.pdf, existing?.group.frame.contentDocument);
@@ -451,11 +466,12 @@ window.cruxWorkspace = {
   showTab(tab) { toggleRail(true); panes.showTab(tab); },
   setMarkupAvailable(win, available) { if (groupFor(win)?.[0] === active) $("mark-dock").hidden = !available; },
   syncTools, setToolTray, saveMarks, hidePreview,
+  readerScrolled(win) { if (win === previewFrom) hidePreview(); },
   citation(win, source, anchor, open) {
     const found = groupFor(win);
     if (!found) return;
     const rect = found[1].frame.getBoundingClientRect();
-    showCitation(source, { left: rect.left + anchor.left, top: rect.top + (anchor.top ?? anchor.bottom), bottom: rect.top + anchor.bottom }, open);
+    showCitation(source, { left: rect.left + anchor.left, top: rect.top + (anchor.top ?? anchor.bottom), bottom: rect.top + anchor.bottom }, open, win);
   },
 };
 
