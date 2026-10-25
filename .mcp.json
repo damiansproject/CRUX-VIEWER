@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "crux-viewer": {
+      "command": "uv",
+      "args": ["run", "--script", "${CLAUDE_PLUGIN_ROOT}/.claude/skills/crux-viewer/scripts/claude_channel.py"]
+    }
+  }
+}

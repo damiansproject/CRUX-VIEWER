@@ -1,0 +1,47 @@
+/* Human highlighter inks. Fluorescent stationery — not the claim-kind palette. */
+
+.user-hl[data-ink="yellow"] { background: rgba(255, 229, 102, 0.3) }
+.user-hl[data-ink="mint"] { background: rgba(61, 255, 176, 0.3) }
+.user-hl[data-ink="sky"] { background: rgba(74, 216, 255, 0.3) }
+.user-hl[data-ink="pink"] { background: rgba(255, 110, 180, 0.3) }
+.user-hl[data-ink="violet"] { background: rgba(201, 160, 255, 0.3) }
+
+.user-box[data-ink="yellow"] {
+  background: rgba(255, 229, 102, 0.28);
+  box-shadow: inset 0 0 0 1.5px #e6c200;
+}
+.user-box[data-ink="mint"] {
+  background: rgba(61, 255, 176, 0.22);
+  box-shadow: inset 0 0 0 1.5px #12c47a;
+}
+.user-box[data-ink="sky"] {
+  background: rgba(74, 216, 255, 0.22);
+  box-shadow: inset 0 0 0 1.5px #12a8d4;
+}
+.user-box[data-ink="pink"] {
+  background: rgba(255, 110, 180, 0.22);
+  box-shadow: inset 0 0 0 1.5px #e0408c;
+}
+.user-box[data-ink="violet"] {
+  background: rgba(201, 160, 255, 0.24);
+  box-shadow: inset 0 0 0 1.5px #9b6ae0;
+}
+
+.user-ul { background: transparent; box-shadow: none; border: 0 }
+.user-ul[data-ink="yellow"] { background: #e6c200 }
+.user-ul[data-ink="mint"] { background: #12c47a }
+.user-ul[data-ink="sky"] { background: #12a8d4 }
+.user-ul[data-ink="pink"] { background: #e0408c }
+.user-ul[data-ink="violet"] { background: #9b6ae0 }
+
+.user-mark.is-selected.user-hl[data-ink="yellow"] { background: rgba(255, 229, 102, 0.4) }
+.user-mark.is-selected.user-hl[data-ink="mint"] { background: rgba(61, 255, 176, 0.4) }
+.user-mark.is-selected.user-hl[data-ink="sky"] { background: rgba(74, 216, 255, 0.4) }
+.user-mark.is-selected.user-hl[data-ink="pink"] { background: rgba(255, 110, 180, 0.4) }
+.user-mark.is-selected.user-hl[data-ink="violet"] { background: rgba(201, 160, 255, 0.4) }
+
+button.ink[data-ink="yellow"] { background: #ffe566 }
+button.ink[data-ink="mint"] { background: #3dffb0 }
+button.ink[data-ink="sky"] { background: #4ad8ff }
+button.ink[data-ink="pink"] { background: #ff6eb4 }
+button.ink[data-ink="violet"] { background: #c9a0ff }

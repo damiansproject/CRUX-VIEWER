@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRUX Viewer</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="picker">
+    <div class="picker-inner">
+      <h1>Literature</h1>
+      <p class="lede">Open a source. Added PDFs queue claim extraction; check progress in Claims.</p>
+      <div class="add-source">
+        <input id="add-pdf" class="vh" type="file" accept=".pdf,application/pdf" multiple>
+        <button type="button" class="add-pdf-btn" id="add-pdf-btn">Add PDF</button>
+        <form id="add-url-form" class="add-url">
+          <input id="add-url" type="url" placeholder="https://" autocomplete="off" required>
+          <button type="submit">Add site</button>
+        </form>
+      </div>
+      <p class="add-status" id="add-status" hidden></p>
+      <ul class="papers" id="papers"></ul>
+    </div>
+  </main>
+  <script type="module" src="/static/picker.js"></script>
+</body>
+</html>

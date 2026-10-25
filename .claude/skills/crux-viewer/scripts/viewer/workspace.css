@@ -1,0 +1,140 @@
+/* The workspace shares the reader's cornflower accents and frosted controls. */
+.claim-extraction { padding: 2px 12px 12px; }
+.claim-extraction .info-act { min-height: 32px; padding: 5px 12px; background: rgba(100,149,237,.12); border: 1px solid rgba(50,107,196,.22); border-radius: 8px; color: #285ba7; font-weight: 600; cursor: pointer; }
+.claim-extraction .info-act:hover:not(:disabled) { background: rgba(100,149,237,.2); }
+.claim-extraction .info-act:focus-visible { outline: 2px solid var(--cornflower); outline-offset: 3px; }
+.claim-extraction .info-act:disabled { cursor: default; color: #606975; background: #e7ebf1; border-color: transparent; }
+.claim-extraction p { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.claim-extraction.has-error p { color: #9b3030; }
+.workspace, .reader { --bg: #e3e8ef; --muted: #606975; --line: rgba(44, 65, 94, .1); --hud-hover: rgba(100, 149, 237, .12); --hud-on: rgba(100, 149, 237, .22) }
+.workspace { --rail-open: 300px; --accent: #326bc4 }
+.workspace [hidden] { display: none !important }
+.workspace :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.workspace #rail { flex: 0 0 var(--rail-open); width: var(--rail-open); border-left: 0; border-right: 1px solid var(--line); background: #f1f4f8; transition: none; z-index: 3 }
+.workspace.rail-off #rail { flex-basis: 0; width: 0; overflow: hidden; border: 0 }
+.workspace .rail-inner { width: 100%; min-width: 0; background: inherit }
+.workspace #rail-resizer { left: auto; right: 0; touch-action: none }
+.workspace-brand { display: flex; align-items: center; justify-content: space-between; height: 48px; flex-shrink: 0; padding: 8px 16px; gap: 16px; border-bottom: 1px solid var(--line) }
+.workspace-brand > a { font-size: 25px; letter-spacing: -.03em; font-weight: 650 }
+.workspace-brand .info-act { flex: none; gap: 6px; padding: 6px 8px; border-radius: 8px; background: transparent; color: var(--accent) }
+.workspace-brand .info-act:hover, .workspace-brand .info-act[aria-expanded="true"] { background: var(--hud-hover) }
+.workspace #library { padding: 12px 12px 4px; overflow: auto; flex: 0 1 auto; min-height: 0; max-height: 38%; border-bottom: 1px solid var(--line) }
+.workspace #library[hidden] { display: none }
+#library-search { font: inherit; width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--frost); margin: 0 0 8px }
+#library-papers a { display: block; padding: 10px; margin-bottom: 4px; border-radius: 8px; background: transparent; box-shadow: none; font-size: 12px; line-height: 1.45 }
+#library-papers a:hover { background: var(--hud-hover) }
+#library-papers a[aria-current="page"] { background: var(--hud-on); color: #254f90 }
+.workspace .rail-head { padding: 12px }
+.workspace .rail-tabs { box-shadow: 0 1px 3px rgba(30, 50, 80, .06) }
+.workspace .rail-pane { padding: 2px 12px 20px }
+.workspace .info-card { padding: 10px 4px; background: transparent; border-radius: 0; box-shadow: none }
+.workspace .info-title { font-size: 14px; line-height: 1.5 }
+.workspace .info-fields { gap: 14px; margin-top: 20px }
+.workspace .info-fields dt { font-size: 11px; letter-spacing: 0 }
+.workspace .info-fields dd { font-size: 13px; line-height: 1.55 }
+.workspace .info-fields a { color: var(--accent) }
+.workspace .claim { border-radius: 10px; box-shadow: 0 2px 6px rgba(30, 50, 80, .06) }
+.workspace .chat-empty { font-size: 13px; line-height: 1.6; margin: 12px 4px }
+.workspace .chat-bubble { flex-shrink: 0; border-radius: 12px; font-size: 13px; line-height: 1.6; white-space: normal; box-shadow: none }
+.workspace .chat-bubble.assistant { padding: 12px 4px; background: transparent }
+.workspace .chat-bubble.user { max-width: 94%; padding: 10px 12px }
+.workspace .chat-bubble.user .chat-message, .chat-plain { white-space: pre-wrap }
+.chat-message > :first-child { margin-top: 0 }
+.chat-message > :last-child { margin-bottom: 0 }
+.chat-message p, .chat-message ul, .chat-message ol, .chat-message pre, .chat-message blockquote { margin: 10px 0 }
+.chat-message ul, .chat-message ol { padding-left: 22px }
+.chat-message h1, .chat-message h2, .chat-message h3, .chat-message h4, .chat-message h5, .chat-message h6 { font-size: 14px; line-height: 1.5; margin: 18px 0 8px }
+.chat-message a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px }
+.chat-message blockquote { padding-left: 12px; border-left: 1px solid #a2b5d0; color: var(--muted) }
+.chat-message pre { padding: 10px; background: #e8edf4; border-radius: 8px; overflow: auto; white-space: pre; scrollbar-width: thin }
+.chat-message code { font: 12px/1.6 ui-monospace, monospace; background: #e8edf4; border-radius: 3px }
+.chat-message table { display: block; overflow-x: auto; max-width: 100%; border-collapse: collapse; font-size: 12px; scrollbar-width: thin }
+.chat-message th, .chat-message td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left }
+.workspace .chat-compose { border-radius: 12px; box-shadow: 0 2px 8px rgba(30, 50, 80, .08) }
+.workspace .chat-compose:focus-within { outline: 2px solid var(--accent); outline-offset: 1px }
+.workspace #chat-input { font-size: 13px; line-height: 1.5; min-height: 48px; max-height: 160px; border-radius: 12px; scrollbar-width: thin }
+.workspace .chat-watch { display: flex; align-items: center; gap: 8px; min-height: 16px; margin: 8px 4px; font-size: 11px }
+.workspace .chat-watch.is-live { color: var(--accent) }
+.chat-watch .chat-dots i { background: currentColor }
+.workspace .chat-chip.is-sent { border: 0; color: var(--ink); font: inherit; font-size: 12px; text-align: left; vertical-align: top }
+.workspace .chat-chip.is-sent:hover { background: var(--hud-hover) }
+.workspace textarea::placeholder, #library-search::placeholder { color: var(--muted); opacity: 1 }
+#readers { display: flex; flex-direction: column; position: relative; flex: 1; min-width: 0; height: 100% }
+#document-tabs { display: flex; align-items: center; gap: 6px; padding: 6px 10px; height: 48px; flex-shrink: 0; background: rgba(246, 248, 252, .86); border-bottom: 1px solid var(--line) }
+#tabs { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: thin }
+.document-tab { display: flex; align-items: center; flex: 0 0 auto; max-width: 320px; border-radius: 8px; color: var(--muted) }
+.document-tab:hover { background: var(--hud-hover) }
+.document-tab.is-selected { background: var(--hud-on); color: #254f90 }
+#tabs button { font: inherit; font-size: 12px; border: 0; background: transparent; color: inherit; cursor: pointer }
+#tabs [role="tab"] { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px 6px 8px 12px; border-radius: 8px }
+.tab-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.tab-side { flex-shrink: 0; font-size: 10px; font-weight: 600; color: var(--accent) }
+.tab-side:empty { display: none }
+#tabs .tab-close { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; padding: 0; margin-right: 4px; border-radius: 5px }
+#tabs .tab-close:hover { background: rgba(44, 65, 94, .1); color: var(--ink) }
+#tabs :focus-visible { outline-offset: -2px }
+#reader-groups { flex: 1; display: flex; min-height: 0; position: relative; --split: 50% }
+.reader-group { flex: 1; min-width: 0; position: relative; overflow: hidden }
+.reader-group::after { content: ""; position: absolute; inset: 0; border: 1px solid transparent; pointer-events: none }
+.is-split .reader-group.is-active::after { border-color: rgba(50, 107, 196, .65) }
+.reader-group[hidden] { display: none }
+.reader-group iframe { display: block; width: 100%; height: 100%; border: 0 }
+.reader-group[data-reader-group="left"] { order: 0 }
+.reader-group[data-reader-group="right"] { order: 2 }
+#reader-empty { position: absolute; inset: 48px 20px 0; display: grid; place-items: center; margin: 0; color: var(--muted); font-size: 14px; text-align: center; pointer-events: none }
+#reader-groups.is-split [data-reader-group="left"] { flex: 0 0 var(--split) }
+#split-resizer { order: 1; width: 5px; flex: 0 0 5px; cursor: col-resize; background: var(--line); touch-action: none }
+#split-resizer[hidden] { display: none }
+.is-resizing iframe { pointer-events: none }
+.is-resizing { cursor: col-resize; user-select: none }
+.workspace #mark-dock { top: 60px; right: 30px; z-index: 40 }
+.workspace #mark-dock .mark-tray { max-width: calc(100vw - 80px) }
+.reader #stage { min-width: 0; width: 100%; height: 100% }
+.reader #pdf-toolbar { max-width: calc(100% - 64px); left: calc(50% - 12px) }
+.reader .hud-title { max-width: 11rem }
+.reader #pdf-controls { flex-shrink: 0; overflow: visible }
+.reader .hud-pill-inner { overflow: visible }
+.reader .hud-title { flex-shrink: 1 }
+.reader.is-report .link-layer { z-index: 5 }
+.chat-citation { font: inherit; font-size: 11px; color: #315f9c; background: var(--hud-hover); padding: 1px 5px; border: 0; border-radius: 4px; cursor: pointer; vertical-align: baseline }
+.chat-citation:hover { background: var(--hud-on) }
+#source-preview { position: fixed; z-index: 80; width: min(320px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: auto; border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); scrollbar-width: thin; scrollbar-color: #b1bfd3 transparent }
+#source-preview[hidden] { display: none }
+#source-preview button { font: inherit; cursor: pointer }
+#source-preview svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round }
+.source-body { padding: 12px 16px 14px }
+.source-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--muted); font-size: 11px }
+.source-location { flex: 1 }
+.source-close, .source-nav button { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--muted) }
+.source-close:hover, .source-nav button:hover { background: var(--hud-hover); color: var(--ink) }
+.source-nav { display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums }
+#source-preview blockquote { margin: 0; padding-left: 12px; border-left: 1px solid #c7d3e4; font-size: 13px; line-height: 1.6; max-height: 190px; overflow: auto; scrollbar-width: thin }
+#source-preview blockquote:empty, .source-status:empty, .source-hint:empty { display: none }
+.source-status { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5 }
+.source-footer { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; background: #f6f8fb; border: 0; color: var(--muted); text-align: left }
+.source-open:hover { background: var(--hud-hover); color: var(--accent) }
+.source-identity { display: grid; flex: 1; min-width: 0; gap: 3px }
+.source-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere }
+.source-hint { font-size: 11px }
+.source-open > svg:last-child { color: var(--accent) }
+.source-retrieve { margin-top: 12px; padding: 7px 12px; border: 0; border-radius: 7px; background: var(--hud-hover); color: var(--accent) }
+.source-retrieve:hover { background: var(--hud-on) }
+.source-retrieve:disabled { cursor: default; color: var(--muted); background: #f1f4f8 }
+.source-crop { margin-top: 12px }
+.source-crop summary { width: fit-content; cursor: pointer; color: var(--accent); font-size: 11px; border-radius: 3px }
+#source-preview img { display: block; width: 100%; height: auto; margin-top: 10px; border-radius: 4px }
+.workspace-error { position: fixed; bottom: 12px; left: 12px; z-index: 100; max-width: 460px; padding: 12px; background: var(--panel); box-shadow: var(--shadow); border-radius: 10px }
+@media (max-width: 650px) {
+  .reader .hud-title { display: none }
+  .reader #pdf-toolbar { left: 8px; transform: none; max-width: calc(100% - 76px); padding-right: 4px; border-radius: 18px }
+  .reader .hud-pill-inner { width: 100%; align-items: flex-start }
+  .reader #pdf-controls { flex: 1; flex-wrap: wrap; justify-content: center }
+  .reader #pdf-controls > * { flex-shrink: 0 }
+  .reader .find-panel { position: absolute; top: calc(100% + 6px); right: 0; display: none; padding: 6px; border-radius: 14px; background: var(--frost); box-shadow: var(--shadow); backdrop-filter: blur(20px) }
+  .reader .find-slot.is-open .find-panel { display: grid }
+  .reader .hud-rule { margin: 0 3px }
+  .workspace #rail { position: absolute; inset: 48px auto 0 0; height: auto; max-width: calc(100vw - 50px) }
+  .workspace .rail-inner { height: 100% }
+  .workspace.rail-off #rail { display: none }
+  .workspace #mark-dock { right: 26px }
+}

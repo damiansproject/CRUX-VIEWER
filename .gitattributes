@@ -1,0 +1,21 @@
+# Normalize to LF in the repository and in the working tree on every platform.
+#
+# Claude Code refuses to launch a dynamic workflow whose script contains control
+# characters, and a bare CR counts. Git for Windows ships core.autocrlf=true in its
+# system config, so without this file a Windows checkout rewrites
+# skill-nested `.claude/skills/*/workflows/*.js` to CRLF and the Workflow tool
+# rejects it with:
+#   "script contains control characters that would be hidden in the approval dialog"
+# while `git status` still reports the tree clean.
+#
+# The repository contains no files that require CRLF for Git text handling of
+# workflows/skills; pin LF everywhere for those paths.
+* text=auto eol=lf
+
+# Belt and braces for the EOL-sensitive paths.
+*.js text eol=lf
+*.mjs text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.toml text eol=lf

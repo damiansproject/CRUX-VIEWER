@@ -1,0 +1,28 @@
+[project]
+name = 'crux-viewer'
+version = '0.1.0'
+description = 'Local viewer for papers: claim quotes highlighted on the original PDFs, citation portals with model-located passages'
+readme = 'README.md'
+license = { file = 'LICENSE' }
+requires-python = '>=3.12'
+dependencies = ['pypdf==6.14.2']
+keywords = ['pdf', 'papers', 'citations', 'literature', 'claude']
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Web Environment',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3.12',
+    'Topic :: Scientific/Engineering',
+]
+
+[project.urls]
+Homepage = 'https://github.com/damiansproject/CRUX-VIEWER'
+Issues = 'https://github.com/damiansproject/CRUX-VIEWER/issues'
+
+[project.optional-dependencies]
+test = ['pytest>=8']
+
+[tool.pytest.ini_options]
+addopts = '-q -rs'
+testpaths = ['tests']

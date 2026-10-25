@@ -1,0 +1,101 @@
+/* AI / claim-kind palette. Human highlighter inks live in user-marks.css. */
+
+.hl,
+mark.crux-quote {
+  background: rgba(138, 144, 153, 0.32);
+}
+.hl.is-active,
+mark.crux-quote.is-active {
+  background: rgba(138, 144, 153, 0.55);
+  box-shadow: 0 0 0 2px #6d7380;
+}
+
+.hl[data-kind="finding"],
+mark.crux-quote[data-kind="finding"] { background: rgba(230, 168, 23, 0.32) }
+.hl[data-kind="finding"].is-active,
+mark.crux-quote[data-kind="finding"].is-active {
+  background: rgba(230, 168, 23, 0.55);
+  box-shadow: 0 0 0 2px #c48414;
+}
+
+.hl[data-kind="method"],
+mark.crux-quote[data-kind="method"] { background: rgba(42, 168, 154, 0.32) }
+.hl[data-kind="method"].is-active,
+mark.crux-quote[data-kind="method"].is-active {
+  background: rgba(42, 168, 154, 0.55);
+  box-shadow: 0 0 0 2px #1f8f83;
+}
+
+.hl[data-kind="mechanism"],
+mark.crux-quote[data-kind="mechanism"] { background: rgba(123, 107, 176, 0.32) }
+.hl[data-kind="mechanism"].is-active,
+mark.crux-quote[data-kind="mechanism"].is-active {
+  background: rgba(123, 107, 176, 0.55);
+  box-shadow: 0 0 0 2px #5f5190;
+}
+
+.hl[data-kind="limitation"],
+mark.crux-quote[data-kind="limitation"] { background: rgba(209, 92, 74, 0.32) }
+.hl[data-kind="limitation"].is-active,
+mark.crux-quote[data-kind="limitation"].is-active {
+  background: rgba(209, 92, 74, 0.55);
+  box-shadow: 0 0 0 2px #b34432;
+}
+
+.hl[data-kind="assumption"],
+mark.crux-quote[data-kind="assumption"] { background: rgba(155, 107, 158, 0.32) }
+.hl[data-kind="assumption"].is-active,
+mark.crux-quote[data-kind="assumption"].is-active {
+  background: rgba(155, 107, 158, 0.55);
+  box-shadow: 0 0 0 2px #7d5680;
+}
+
+.hl[data-kind="problem"],
+mark.crux-quote[data-kind="problem"] { background: rgba(224, 122, 61, 0.32) }
+.hl[data-kind="problem"].is-active,
+mark.crux-quote[data-kind="problem"].is-active {
+  background: rgba(224, 122, 61, 0.55);
+  box-shadow: 0 0 0 2px #c45f22;
+}
+
+.claim .kind {
+  background: rgba(138, 144, 153, 0.32);
+  color: #6d7380;
+}
+.claim.is-active { outline: 2px solid #6d7380 }
+
+.claim[data-kind="finding"] .kind {
+  background: rgba(230, 168, 23, 0.32);
+  color: #c48414;
+}
+.claim[data-kind="finding"].is-active { outline-color: #c48414 }
+
+.claim[data-kind="method"] .kind {
+  background: rgba(42, 168, 154, 0.32);
+  color: #1f8f83;
+}
+.claim[data-kind="method"].is-active { outline-color: #1f8f83 }
+
+.claim[data-kind="mechanism"] .kind {
+  background: rgba(123, 107, 176, 0.32);
+  color: #5f5190;
+}
+.claim[data-kind="mechanism"].is-active { outline-color: #5f5190 }
+
+.claim[data-kind="limitation"] .kind {
+  background: rgba(209, 92, 74, 0.32);
+  color: #b34432;
+}
+.claim[data-kind="limitation"].is-active { outline-color: #b34432 }
+
+.claim[data-kind="assumption"] .kind {
+  background: rgba(155, 107, 158, 0.32);
+  color: #7d5680;
+}
+.claim[data-kind="assumption"].is-active { outline-color: #7d5680 }
+
+.claim[data-kind="problem"] .kind {
+  background: rgba(224, 122, 61, 0.32);
+  color: #c45f22;
+}
+.claim[data-kind="problem"].is-active { outline-color: #c45f22 }

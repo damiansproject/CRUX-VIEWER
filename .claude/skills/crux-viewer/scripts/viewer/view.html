@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRUX Viewer</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/workspace.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js" integrity="sha384-wLhprpjsmjc/XYIcF+LpMxd8yS1gss6jhevOp6F6zhiIoFK6AmHtm4bGKtehTani" crossorigin="anonymous"></script>
+</head>
+<body class="workspace">
+  <span id="status" class="vh" aria-live="polite"></span>
+  <div class="shell">
+    <aside id="rail">
+        <div class="rail-resizer" id="rail-resizer" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Resize pane"></div>
+        <div class="rail-inner">
+        <div class="workspace-brand"><a href="/" title="CRUX sources">CRUX</a><button class="info-act" id="library-toggle" aria-expanded="false" aria-controls="library"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 3v10m4-10v10m4-10 2 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Library</button></div>
+        <section id="library" hidden><input type="search" id="library-search" aria-label="Search sources" placeholder="Find a source"><ol id="library-papers" class="papers"></ol><a class="info-act" href="/">Add sources</a></section>
+        <div class="rail-head">
+          <div class="rail-tabs" role="tablist" aria-label="Side pane">
+            <button type="button" role="tab" id="tab-info" aria-selected="false" aria-controls="info-pane" tabindex="-1">Info</button>
+            <button type="button" role="tab" id="tab-claims" aria-selected="true" aria-controls="claim-pane" tabindex="0">Claims</button>
+            <button type="button" role="tab" id="tab-chat" aria-selected="false" aria-controls="chat-pane" tabindex="-1">Chat</button>
+          </div>
+          <p class="meta" id="meta"></p>
+        </div>
+        <div id="info-pane" class="rail-pane" role="tabpanel" aria-labelledby="tab-info" hidden></div>
+        <div id="claim-pane" class="rail-pane" role="tabpanel" aria-labelledby="tab-claims">
+          <div class="claim-extraction" id="claim-extraction" hidden>
+            <button type="button" class="info-act" id="extract-claims" aria-describedby="extract-status">Extract claims</button>
+            <p id="extract-status" role="status" aria-live="polite"></p>
+          </div>
+          <ol id="claims"></ol>
+        </div>
+        <div id="chat-pane" class="rail-pane" role="tabpanel" aria-labelledby="tab-chat" hidden>
+          <div id="chat-log" role="log" aria-label="Conversation"></div>
+          <p class="chat-watch" id="chat-watch" role="status"></p>
+          <div class="chat-slash" id="chat-slash" hidden role="listbox" aria-label="Commands"></div>
+          <form id="chat-form" autocomplete="off">
+            <div class="chat-compose">
+            <div class="chat-attach" id="chat-attach" hidden></div>
+            <label class="vh" for="chat-input">Message</label>
+            <textarea id="chat-input" rows="2" placeholder="Ask about the open sources…"></textarea>
+            <button type="submit" class="chat-send" id="chat-send" title="Send" aria-label="Send">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 12.4 V3.8 M4.2 7.2 L8 3.6 l3.8 3.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </aside>
+    <main id="readers">
+      <div id="document-tabs">
+        <button class="hud-btn" id="rail-toggle" title="Hide pane" aria-label="Hide pane" aria-expanded="true" aria-controls="rail"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3v10" stroke="currentColor" stroke-width="1.5"/></svg></button>
+        <div id="tabs" role="tablist" aria-label="Open documents"></div>
+        <button class="hud-btn" id="split-right" title="Open alongside" aria-label="Open alongside" aria-expanded="false" aria-controls="reader-group-right"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 3v10" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <div id="reader-groups"><section class="reader-group" id="reader-group-left" role="tabpanel" data-reader-group="left"></section><div id="split-resizer" role="separator" tabindex="0" aria-label="Resize readers" aria-orientation="vertical" hidden></div><section class="reader-group" id="reader-group-right" role="tabpanel" data-reader-group="right" hidden></section></div>
+      <p id="reader-empty" hidden>Open a paper from Library to begin reading.</p>
+      <div id="mark-dock" hidden>
+        <button type="button" class="hud-fab" id="tool-tray-toggle" title="Markup" aria-label="Markup" aria-expanded="false">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2.8 12.8 l2.4-1 6.4-6.4 1.6 1.6-6.4 6.4z M11.6 3.2 l1.8 1.8 1.2-1.2-1.8-1.8z" fill="currentColor"/></svg>
+        </button>
+        <div class="mark-tray" role="toolbar" aria-label="Marks">
+          <button type="button" class="hud-btn is-on" id="tool-select" title="Select" aria-pressed="true" aria-label="Select">
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M3 1.8 L3 12.2 L6.1 9.5 L8.3 14.1 L10.2 13.2 L8 8.7 L12.2 8.2 Z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="hud-btn" id="tool-highlight" title="Highlighter" aria-pressed="false" aria-label="Highlighter">
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2.8 12.8 l2.4-1 6.4-6.4 1.6 1.6-6.4 6.4z M11.6 3.2 l1.8 1.8 1.2-1.2-1.8-1.8z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="hud-btn" id="tool-box" title="Highlight box" aria-pressed="false" aria-label="Highlight box">
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="2.8" y="2.8" width="10.4" height="10.4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+          </button>
+          <button type="button" class="hud-btn" id="tool-underline" title="Underline" aria-pressed="false" aria-label="Underline">
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.8 v5.2 a4 4 0 0 0 8 0 V2.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 13.6 h10" stroke="currentColor" stroke-width="1.7" fill="none"/></svg>
+          </button>
+          <span class="ink-swatches" id="ink-swatches" role="listbox" aria-label="Highlighter colors">
+            <button type="button" class="ink is-on" data-ink="yellow" title="Yellow" aria-label="Yellow"></button>
+            <button type="button" class="ink" data-ink="mint" title="Mint" aria-label="Mint"></button>
+            <button type="button" class="ink" data-ink="sky" title="Sky" aria-label="Sky"></button>
+            <button type="button" class="ink" data-ink="pink" title="Pink" aria-label="Pink"></button>
+            <button type="button" class="ink" data-ink="violet" title="Violet" aria-label="Violet"></button>
+          </span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <aside id="source-preview" hidden aria-label="Source passage"></aside>
+  <script type="module" src="/static/workspace.mjs"></script>
+</body>
+</html>

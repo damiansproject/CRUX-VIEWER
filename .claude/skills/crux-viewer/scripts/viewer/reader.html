@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRUX Viewer</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/workspace.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+</head>
+<body class="reader">
+  <span id="status" class="vh" aria-live="polite">Loading</span>
+  <div class="shell">
+    <div id="stage">
+      <div id="banner" class="banner" hidden></div>
+      <div id="pdf-toolbar" class="hud-pill">
+        <div class="hud-pill-inner">
+        <button type="button" class="hud-btn" id="pdf-back-loc" title="Previous location" aria-label="Previous location" disabled>
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10.2 3.2 L5.2 8 l5 4.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h1 id="title" class="hud-title">…</h1>
+        <div id="pdf-controls" class="hud-pdf" hidden>
+          <span class="hud-rule"></span>
+          <button type="button" class="hud-btn" id="pdf-prev" title="Previous page" aria-label="Previous page">
+            <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3.2 10.2 L8 5.2 l4.8 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <input id="pdf-page" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="1" aria-label="Page">
+          <span class="pdf-of">/</span>
+          <span id="pdf-page-count">1</span>
+          <button type="button" class="hud-btn" id="pdf-next" title="Next page" aria-label="Next page">
+            <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3.2 5.8 L8 10.8 l4.8-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="hud-rule"></span>
+          <button type="button" class="hud-btn" id="pdf-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+          <input id="pdf-zoom" type="text" value="100%" aria-label="Zoom" spellcheck="false">
+          <button type="button" class="hud-btn" id="pdf-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+          <div class="fit-menu" id="fit-menu">
+            <button type="button" class="fit-toggle" id="pdf-fit-toggle" title="Fit" aria-label="Fit" aria-haspopup="listbox" aria-expanded="false" aria-controls="pdf-fit-list">
+              <span id="pdf-fit-label">Width</span>
+            </button>
+          </div>
+          <button type="button" class="hud-btn" id="pdf-rotate" title="Rotate" aria-label="Rotate">
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M13 7.2a5.2 5.2 0 1 0 1 2.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M13 3.4 v4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="hud-rule"></span>
+          <div class="find-slot" id="find-slot">
+            <button type="button" class="hud-btn" id="pdf-find-toggle" title="Find" aria-label="Find" aria-expanded="false" aria-controls="pdf-find">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 10.2 L13.3 13.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </button>
+            <div class="find-panel">
+              <div class="find-clip">
+                <div class="find-panel-inner">
+                  <input id="pdf-find" type="search" placeholder="Find" aria-label="Find in document">
+                  <button type="button" class="hud-btn" id="pdf-find-prev" title="Previous match" aria-label="Previous match">
+                    <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M3.2 10.2 L8 5.2 l4.8 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <button type="button" class="hud-btn" id="pdf-find-next" title="Next match" aria-label="Next match">
+                    <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M3.2 5.8 L8 10.8 l4.8-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <span id="pdf-find-count" class="pdf-find-count"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="fit-list" id="pdf-fit-list" role="listbox" hidden>
+          <button type="button" role="option" data-fit="width">Width</button>
+          <button type="button" role="option" data-fit="height">Height</button>
+          <button type="button" role="option" data-fit="auto">Page</button>
+          <button type="button" role="option" data-fit="single">Single</button>
+          <button type="button" role="option" data-fit="double">Spread</button>
+        </div>
+      </div>
+      <div id="scroll-rail" hidden>
+        <div class="scroll-track" id="scroll-track">
+          <div class="scroll-ticks" id="scroll-ticks"></div>
+          <div class="scroll-find" id="scroll-find"></div>
+          <button type="button" class="scroll-thumb" id="scroll-thumb" aria-label="Pages"></button>
+        </div>
+      </div>
+      <div id="doc-well"></div>
+    </div>
+  </div>
+  <div id="sel-menu" class="sel-menu" hidden role="menu"></div>
+  <script type="module" src="/static/view.js"></script>
+</body>
+</html>

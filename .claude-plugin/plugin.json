@@ -1,0 +1,6 @@
+{
+  "name": "crux-viewer",
+  "version": "0.1.0",
+  "description": "Open original PDFs and pages with CRUX claim quotes highlighted.",
+  "skills": "./.claude/skills/"
+}

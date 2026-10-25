@@ -1,0 +1,14 @@
+.crux_run/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+*.pyc
+.DS_Store
+.gstack/
+.crux-viewer/
+literature_inbox/
+playwright-report/
+node_modules/
+.test-tmp/

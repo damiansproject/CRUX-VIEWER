@@ -1,0 +1,13 @@
+{
+  "name": "crux-viewer-local",
+  "owner": {
+    "name": "local"
+  },
+  "plugins": [
+    {
+      "name": "crux-viewer",
+      "source": "./",
+      "description": "CRUX Viewer: highlight claims on original PDFs and pages"
+    }
+  ]
+}
